@@ -1,0 +1,10 @@
+spring:
+  liquibase:
+    change-log: classpath:classpath:/db/master.xml
+  devtools:
+    livereload:
+      port: 35730
+
+rsa:
+  public-key: classpath:certs/public-key.pem
+  private-key: classpath:certs/private-key.pem

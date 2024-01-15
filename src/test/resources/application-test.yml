@@ -1,0 +1,6 @@
+spring:
+  liquibase:
+    change-log: classpath:classpath:/db/master.xml
+  sql:
+    init:
+      mode: always

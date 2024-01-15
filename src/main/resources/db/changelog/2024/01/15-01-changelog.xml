@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1705328198997-1" author="sergiufalcusan (generated)">
+        <createSequence incrementBy="50" sequenceName="sequence_generator" startValue="1"/>
+    </changeSet>
+    <changeSet id="1705328198997-2" author="sergiufalcusan (generated)">
+        <createTable tableName="course">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_course"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="schedule" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="teacher_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1705328198997-3" author="sergiufalcusan (generated)">
+        <createTable tableName="student">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_student"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1705328198997-4" author="sergiufalcusan (generated)">
+        <createTable tableName="student_course">
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_student_course"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_student_course"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1705328198997-5" author="sergiufalcusan (generated)">
+        <createTable tableName="teacher">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teacher"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1705328198997-6" author="sergiufalcusan (generated)">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1705328198997-7" author="sergiufalcusan (generated)">
+        <addUniqueConstraint columnNames="email" constraintName="uc_users_email" tableName="users"/>
+    </changeSet>
+    <changeSet id="1705328198997-8" author="sergiufalcusan (generated)">
+        <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="course"
+                                 constraintName="FK_COURSE_ON_TEACHER" referencedColumnNames="id"
+                                 referencedTableName="teacher"/>
+    </changeSet>
+    <changeSet id="1705328198997-9" author="sergiufalcusan (generated)">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="student" constraintName="FK_STUDENT_ON_ID"
+                                 referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1705328198997-10" author="sergiufalcusan (generated)">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="teacher" constraintName="FK_TEACHER_ON_ID"
+                                 referencedColumnNames="id" referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1705328198997-11" author="sergiufalcusan (generated)">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="student_course"
+                                 constraintName="fk_stucou_on_course" referencedColumnNames="id"
+                                 referencedTableName="course"/>
+    </changeSet>
+    <changeSet id="1705328198997-12" author="sergiufalcusan (generated)">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_course"
+                                 constraintName="fk_stucou_on_student" referencedColumnNames="id"
+                                 referencedTableName="student"/>
+    </changeSet>
+
+</databaseChangeLog>
