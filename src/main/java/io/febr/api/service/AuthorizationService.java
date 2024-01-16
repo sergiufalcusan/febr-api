@@ -1,10 +1,14 @@
 package io.febr.api.service;
 
+import io.febr.api.dto.AuthDTO;
+import io.febr.api.mapper.UserMapper;
+import io.febr.api.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -20,6 +24,8 @@ public class AuthorizationService {
     private static final Logger log = LoggerFactory.getLogger(AuthorizationService.class);
 
     private JwtEncoder jwtEncoder;
+    private UserMapper userMapper;
+    private final UserRepository userRepository;
 
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
@@ -38,5 +44,11 @@ public class AuthorizationService {
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public AuthDTO.UserResponse getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        return userMapper.toDto(user);
     }
 }

@@ -60,7 +60,7 @@ public class CourseControllerTest extends BaseIntegrationTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/course/create")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/teacher/course/create")
                         .with(user("teacher@gmail.com").roles("TEACHER")).with(csrf())
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(CourseFactory.createRequestDTO())))

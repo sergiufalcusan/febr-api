@@ -147,7 +147,7 @@ public class CourseIntegrationTest extends BaseIntegrationTest {
 
         var student = createStudent("student@gmail.com");
 
-        courseService.enrollStudent(courseDto.id(), new CourseDTO.EnrollmentRequest(student.getId()));
+        courseService.enrollStudent(new CourseDTO.EnrollmentRequest(courseDto.id(), student.getId()));
 
         var course = courseRepository.findById(courseDto.id()).orElseThrow();
         assertThat(course.getStudents().size()).isEqualTo(1);
@@ -161,8 +161,8 @@ public class CourseIntegrationTest extends BaseIntegrationTest {
 
         var student = createStudent("student@gmail.com");
 
-        courseService.enrollStudent(courseDto.id(), new CourseDTO.EnrollmentRequest(student.getId()));
-        courseService.enrollStudent(courseDto.id(), new CourseDTO.EnrollmentRequest(student.getId()));
+        courseService.enrollStudent(new CourseDTO.EnrollmentRequest(courseDto.id(), student.getId()));
+        courseService.enrollStudent(new CourseDTO.EnrollmentRequest(courseDto.id(), student.getId()));
 
         var course = courseRepository.findById(courseDto.id()).orElseThrow();
         assertThat(course.getStudents().size()).isEqualTo(1);
@@ -177,8 +177,8 @@ public class CourseIntegrationTest extends BaseIntegrationTest {
         var student1 = createStudent("student1@gmail.com");
         var student2 = createStudent("student2@gmail.com");
 
-        courseService.enrollStudent(courseDto.id(), new CourseDTO.EnrollmentRequest(student1.getId()));
-        courseService.enrollStudent(courseDto.id(), new CourseDTO.EnrollmentRequest(student2.getId()));
+        courseService.enrollStudent(new CourseDTO.EnrollmentRequest(courseDto.id(), student1.getId()));
+        courseService.enrollStudent(new CourseDTO.EnrollmentRequest(courseDto.id(), student2.getId()));
 
         var course = courseRepository.findById(courseDto.id()).orElseThrow();
         assertThat(course.getStudents().size()).isEqualTo(2);

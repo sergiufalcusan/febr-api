@@ -38,5 +38,5 @@ public class CourseDTO {
         private Long teacherId;
     }
 
-    public record EnrollmentRequest(Long studentId) { }
+    public record EnrollmentRequest(Long courseId, Long studentId) { }
 }

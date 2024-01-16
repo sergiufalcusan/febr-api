@@ -69,8 +69,8 @@ public class CourseService {
         courseRepository.deleteAll();
     }
 
-    public void enrollStudent(Long id, CourseDTO.EnrollmentRequest courseEnrollmentDTO) {
-        Course course = courseRepository.findById(id).orElseThrow();
+    public void enrollStudent(CourseDTO.EnrollmentRequest courseEnrollmentDTO) {
+        Course course = courseRepository.findById(courseEnrollmentDTO.courseId()).orElseThrow();
 
         Student student = studentRepository.findById(courseEnrollmentDTO.studentId()).orElseThrow();
 
