@@ -65,7 +65,7 @@ public class UserService {
                 .lastName(registerDTO.lastName())
                 .email(registerDTO.email())
                 .password(passwordEncoder.encode(registerDTO.password()))
-                .role(Role.ROLE_TEACHER)
+                .role(Role.ROLE_STUDENT)
                 .build();
 
         student = studentRepository.save(student);

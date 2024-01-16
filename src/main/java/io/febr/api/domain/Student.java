@@ -2,7 +2,9 @@ package io.febr.api.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Set;
@@ -11,6 +13,8 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Student extends User {
     @ManyToMany(cascade = {
             CascadeType.PERSIST,

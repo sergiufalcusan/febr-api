@@ -4,7 +4,9 @@ import io.febr.api.domain.Course;
 import io.febr.api.domain.Student;
 import io.febr.api.domain.Teacher;
 import io.febr.api.dto.CourseDTO;
+import io.febr.api.dto.StudentDTO;
 import io.febr.api.mapper.CourseMapper;
+import io.febr.api.mapper.StudentMapper;
 import io.febr.api.repository.CourseRepository;
 import io.febr.api.repository.StudentRepository;
 import jakarta.transaction.Transactional;
@@ -22,6 +24,7 @@ public class CourseService {
     private StudentRepository studentRepository;
     private UserService userService;
     private CourseMapper courseMapper;
+    private StudentMapper studentMapper;
 
     public List<CourseDTO.CreateResponse> getAllCourses() {
         return courseMapper.toDtoList(courseRepository.findAll());
@@ -71,7 +74,6 @@ public class CourseService {
 
     public void enrollStudent(CourseDTO.EnrollmentRequest courseEnrollmentDTO) {
         Course course = courseRepository.findById(courseEnrollmentDTO.courseId()).orElseThrow();
-
         Student student = studentRepository.findById(courseEnrollmentDTO.studentId()).orElseThrow();
 
         if (course.getStudents() == null) {
@@ -80,6 +82,38 @@ public class CourseService {
             course.getStudents().add(student);
         }
 
+        if (student.getCourses() == null) {
+            student.setCourses(new HashSet<>(List.of(course)));
+        } else {
+            student.getCourses().add(course);
+        }
+
         courseRepository.save(course);
+        studentRepository.save(student);
+    }
+
+    public void unenrollStudent(CourseDTO.EnrollmentRequest courseEnrollmentDTO) {
+        Course course = courseRepository.findById(courseEnrollmentDTO.courseId()).orElseThrow();
+        Student student = studentRepository.findById(courseEnrollmentDTO.studentId()).orElseThrow();
+
+        if (course.getStudents() == null) {
+            course.setStudents(new HashSet<>(List.of(student)));
+        } else {
+            course.getStudents().remove(student);
+        }
+
+        if (student.getCourses() == null) {
+            student.setCourses(new HashSet<>(List.of(course)));
+        } else {
+            student.getCourses().remove(course);
+        }
+
+        courseRepository.save(course);
+        studentRepository.save(student);
+    }
+
+    public List<StudentDTO.RegisterResponse> getStudentsByCourseId(Long id) {
+        Course course = courseRepository.findById(id).orElseThrow();
+        return studentMapper.toDtoList(course.getStudents().stream().toList());
     }
 }
