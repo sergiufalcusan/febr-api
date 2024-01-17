@@ -12,6 +12,10 @@ unnecessary complexities.
 
 ## How to run the project
 
+### Environment variables
+The environment variables are stored in the `.env` file which is git ignored. You can copy the `.env.example` file and rename it to `.env` and fill in the values.
+You should use a plugin to manage environment variables in IntelliJ.
+
 ### Using IntelliJ
 1. Clone the repository
 2. Open the project in IntelliJ

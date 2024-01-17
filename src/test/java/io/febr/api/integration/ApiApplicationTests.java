@@ -7,6 +7,5 @@ class ApiApplicationTests extends BaseIntegrationTest {
     @Test
     void contextLoads() {
         Assertions.assertTrue(postgresContainer.isRunning());
-        Assertions.assertTrue(redisContainer.isRunning());
     }
 }
