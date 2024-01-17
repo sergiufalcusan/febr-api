@@ -13,6 +13,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * A user is a person who can log in to the system.
+ * A user has a name, an email, and a password.
+ * A user can be a student or a teacher.
+ * However, we used this class for defining an admin also.
+ */
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)

@@ -17,6 +17,6 @@ public class CourseFactory {
     }
 
     public static CourseDTO.UpdateRequest updateRequestDTO() {
-        return new CourseDTO.UpdateRequest("Course 2", "Description 1", LocalDateTime.now(), 1L);
+        return new CourseDTO.UpdateRequest("Course 2", "Description 1", LocalDateTime.now());
     }
 }

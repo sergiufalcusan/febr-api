@@ -1,8 +1,8 @@
 package io.febr.api.mapper;
 
+import io.febr.api.config.MapperConfiguration;
 import io.febr.api.domain.Course;
 import io.febr.api.dto.CourseDTO;
-import io.febr.api.config.MapperConfiguration;
 import org.mapstruct.Mapper;
 
 @Mapper(config = MapperConfiguration.class)

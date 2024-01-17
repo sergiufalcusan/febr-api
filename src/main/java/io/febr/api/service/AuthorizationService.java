@@ -6,11 +6,13 @@ import io.febr.api.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +24,28 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AuthorizationService {
     private static final Logger log = LoggerFactory.getLogger(AuthorizationService.class);
-
+    private final UserRepository userRepository;
     private JwtEncoder jwtEncoder;
     private UserMapper userMapper;
-    private final UserRepository userRepository;
+    private AuthenticationManager authenticationManager;
 
-    public String generateToken(Authentication authentication) {
+    /**
+     * Generate token for user
+     *
+     * @param userLogin user login request
+     * @return token
+     */
+    public String generateToken(AuthDTO.LoginRequest userLogin) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        userLogin.username(),
+                        userLogin.password()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        log.info("Token requested for user :{}", authentication.getAuthorities());
+
         Instant now = Instant.now();
-
         String scope = authentication.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
@@ -46,6 +62,11 @@ public class AuthorizationService {
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
+    /**
+     * Get current user
+     *
+     * @return current user
+     */
     public AuthDTO.UserResponse getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var user = userRepository.findByEmail(authentication.getName()).orElseThrow();

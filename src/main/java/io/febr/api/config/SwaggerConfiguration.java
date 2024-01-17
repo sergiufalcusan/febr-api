@@ -17,7 +17,7 @@ public class SwaggerConfiguration {
         return new OpenAPI().addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
                 .info(new Info().title("Learning Management System API")
-                        .version("1.0").contact(new Contact().name("Sergiu Falcusan").email( "sergiu@falcusan.ro")));
+                        .version("1.0").contact(new Contact().name("Sergiu Falcusan").email("sergiu@falcusan.ro")));
     }
 
     private SecurityScheme createAPIKeyScheme() {

@@ -6,6 +6,12 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+/**
+ * A course is a class that a teacher teaches to a group of students.
+ * A course has a name, a description, a schedule, a teacher, and a list of students.
+ * A course can be taught by only one teacher.
+ * A course can have many students.
+ */
 @Entity
 @Getter
 @Setter

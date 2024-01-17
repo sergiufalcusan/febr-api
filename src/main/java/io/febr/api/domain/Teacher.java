@@ -9,6 +9,9 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.Set;
 
+/**
+ * A teacher is a user who teaches a course.
+ */
 @SuperBuilder
 @Entity
 @AllArgsConstructor

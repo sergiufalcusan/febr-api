@@ -1,13 +1,14 @@
 package io.febr.api.integration;
 
+import io.febr.api.controller.exception.CourseNotFoundException;
 import io.febr.api.domain.Course;
 import io.febr.api.domain.Role;
 import io.febr.api.domain.Student;
 import io.febr.api.domain.Teacher;
 import io.febr.api.dto.CourseDTO;
-import io.febr.api.repository.StudentRepository;
 import io.febr.api.factory.CourseFactory;
 import io.febr.api.repository.CourseRepository;
+import io.febr.api.repository.StudentRepository;
 import io.febr.api.repository.TeacherRepository;
 import io.febr.api.service.CourseService;
 import jakarta.transaction.Transactional;
@@ -73,24 +74,25 @@ public class CourseIntegrationTest extends BaseIntegrationTest {
 
     @Test
     @WithMockUser(value = "teacher@gmail.com", roles = "TEACHER")
-    public void testGetCourseById() {
+    public void testGetCourseById() throws CourseNotFoundException {
         createDefaultTeacher();
 
         var courseDto = courseService.createCourse(CourseFactory.createRequestDTO());
 
-        CourseDTO.CreateResponse courseDTO = courseService.getCourseById(courseDto.id());
+        CourseDTO.CreateResponse courseDTO = courseService.getCourseByIdAndCurrentUserRole(courseDto.id());
         assertThat(courseDTO).isNotNull();
     }
 
     @Test
+    @WithMockUser(value = "teacher@gmail.com", roles = "TEACHER")
     public void testGetCourseByIdNotFound() {
-        Exception exception = assertThrows(NoSuchElementException.class, () -> courseService.getCourseById(1L));
+        Exception exception = assertThrows(NoSuchElementException.class, () -> courseService.getCourseByIdAndCurrentUserRole(1L));
         assertThat(exception.getMessage()).isEqualTo("No value present");
     }
 
     @Test
     @WithMockUser(value = "teacher@gmail.com", roles = "TEACHER")
-    public void testUpdateCourse() {
+    public void testUpdateCourse() throws CourseNotFoundException {
         createDefaultTeacher();
         var teacher2 = createTeacher("teacher2@gmail.com");
         var courseDto = courseService.createCourse(CourseFactory.createRequestDTO());
@@ -98,15 +100,13 @@ public class CourseIntegrationTest extends BaseIntegrationTest {
         String COURSE_NAME = "Course 2";
         String COURSE_DESCRIPTION = "Description 2";
         LocalDateTime COURSE_SCHEDULE = LocalDateTime.now();
-        Long TEACHER_ID = teacher2.getId();
 
 
-        CourseDTO.CreateResponse courseDTO = courseService.updateCourse(courseDto.id(),
+        courseService.updateCourse(courseDto.id(),
                 CourseDTO.UpdateRequest.builder()
                         .name(COURSE_NAME)
                         .description(COURSE_DESCRIPTION)
                         .schedule(COURSE_SCHEDULE)
-                        .teacherId(TEACHER_ID)
                         .build()
         );
 
@@ -116,7 +116,6 @@ public class CourseIntegrationTest extends BaseIntegrationTest {
         assertThat(updatedCourse.getName()).isEqualTo(COURSE_NAME);
         assertThat(updatedCourse.getDescription()).isEqualTo(COURSE_DESCRIPTION);
         assertThat(updatedCourse.getSchedule()).isEqualTo(COURSE_SCHEDULE);
-        assertThat(updatedCourse.getTeacher().getId()).isEqualTo(teacher2.getId());
     }
 
     @Test

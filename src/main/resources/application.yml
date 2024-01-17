@@ -8,3 +8,7 @@ spring:
 rsa:
   public-key: classpath:certs/public-key.pem
   private-key: classpath:certs/private-key.pem
+
+sendgrid:
+  api-key: ${SENDGRID_API_KEY}
+  sender-email: ${SENDGRID_SENDER_EMAIL}

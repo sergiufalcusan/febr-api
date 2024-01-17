@@ -13,9 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @AllArgsConstructor
 public class DataInitialization implements CommandLineRunner {
+    private static final Logger logger = LoggerFactory.getLogger(DataInitialization.class);
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
-    private static final Logger logger = LoggerFactory.getLogger(DataInitialization.class);
 
     @Override
     public void run(String... args) {

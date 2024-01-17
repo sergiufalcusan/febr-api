@@ -1,24 +1,25 @@
 package io.febr.api.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.febr.api.domain.Course;
 import io.febr.api.domain.Role;
+import io.febr.api.domain.Student;
 import io.febr.api.domain.Teacher;
-import io.febr.api.factory.CourseFactory;
 import io.febr.api.integration.BaseIntegrationTest;
 import io.febr.api.repository.CourseRepository;
+import io.febr.api.repository.StudentRepository;
 import io.febr.api.repository.TeacherRepository;
-import io.febr.api.repository.UserRepository;
-import io.febr.api.service.CourseService;
 import jakarta.transaction.Transactional;
+import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -27,12 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @Transactional
-public class CourseControllerTest extends BaseIntegrationTest {
+public class StudentCourseControllerTest extends BaseIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private CourseService courseService;
 
     @Autowired
     private CourseRepository courseRepository;
@@ -41,46 +39,32 @@ public class CourseControllerTest extends BaseIntegrationTest {
     private TeacherRepository teacherRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private StudentRepository studentRepository;
 
     @AfterEach
     public void tearDown() {
+        studentRepository.deleteAll();
         courseRepository.deleteAll();
         teacherRepository.deleteAll();
     }
 
     @Test
-    public void testCreateCourse() throws Exception {
-        Teacher teacher = Teacher.builder().email("teacher@gmail.com")
-                .password("password")
-                .firstName("teacher")
-                .lastName("teacher")
-                .role(Role.ROLE_TEACHER).build();
-        teacherRepository.save(teacher);
+    public void testGetAllTStudentCourses() throws Exception {
+        createAndEnrollStudent("student@gmail.com");
+        createAndEnrollStudent("student2@gmail.com");
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/teacher/course/create")
-                        .with(user("teacher@gmail.com").roles("TEACHER")).with(csrf())
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(CourseFactory.createRequestDTO())))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").isNotEmpty());
-    }
-
-    @Test
-    public void testGetAllCourses() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        createCourse();
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/course/all").with(user("user")))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student/course/all")
+                        .with(user("student@gmail.com").authorities(new SimpleGrantedAuthority("SCOPE_ROLE_STUDENT"))).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));
     }
 
     private Teacher createTeacher() {
-        Teacher teacher = Teacher.builder().email("teacher@gmail.com")
+        return createTeacher("teacher@gmail.com");
+    }
+
+    private Teacher createTeacher(String name) {
+        Teacher teacher = Teacher.builder().email(RandomString.make(10) + name)
                 .password("password")
                 .firstName("teacher")
                 .lastName("teacher")
@@ -89,13 +73,39 @@ public class CourseControllerTest extends BaseIntegrationTest {
         return teacherRepository.save(teacher);
     }
 
-    private void createCourse() {
+    private Course createCourse() {
         var teacher = createTeacher();
         Course course = Course.builder()
                 .name("course")
                 .description("description")
                 .schedule(LocalDateTime.now())
                 .teacher(teacher).build();
+        return courseRepository.save(course);
+    }
+
+    private void createAndEnrollStudent(String email) {
+        var student = createStudent(email);
+        var course = createCourse();
+        if (course.getStudents() == null) {
+            course.setStudents(new HashSet<>());
+        }
+        course.getStudents().add(student);
         courseRepository.save(course);
+
+        if (student.getCourses() == null) {
+            student.setCourses(new HashSet<>());
+        }
+        student.getCourses().add(course);
+    }
+
+    private Student createStudent(String email) {
+        Student student = Student.builder()
+                .email(email)
+                .password("password")
+                .firstName("student")
+                .lastName("student")
+                .role(Role.ROLE_STUDENT).build();
+
+        return studentRepository.save(student);
     }
 }

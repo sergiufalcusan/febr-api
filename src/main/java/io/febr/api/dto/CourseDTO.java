@@ -6,10 +6,12 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTOs for Course
+ */
 public class CourseDTO {
     @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
     @JsonSerialize
@@ -25,18 +27,21 @@ public class CourseDTO {
             String name,
             String description,
             LocalDateTime schedule
-    ) { }
+    ) {
+    }
 
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
     @Data
+    @AllArgsConstructor
+    @Builder
+    @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+    @JsonSerialize
     public static class UpdateRequest {
         private String name;
         private String description;
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
         private LocalDateTime schedule;
-        private Long teacherId;
     }
 
-    public record EnrollmentRequest(Long courseId, Long studentId) { }
+    public record EnrollmentRequest(Long courseId, Long studentId) {
+    }
 }

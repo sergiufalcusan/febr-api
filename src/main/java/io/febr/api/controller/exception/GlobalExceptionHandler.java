@@ -22,7 +22,8 @@ public class GlobalExceptionHandler {
      * @param request The current request
      */
     @ExceptionHandler({
-            NoSuchElementException.class
+            NoSuchElementException.class,
+            CourseNotFoundException.class
     })
     @Nullable
     public final ResponseEntity<ApiException> handleException(Exception ex, WebRequest request) {
@@ -32,6 +33,10 @@ public class GlobalExceptionHandler {
             HttpStatus status = HttpStatus.NOT_FOUND;
 
             return handleCourseNotFoundException(e, headers, status, request);
+        } else if (ex instanceof NoSuchElementException e) {
+            HttpStatus status = HttpStatus.NOT_FOUND;
+
+            return handleNoSuchElementFoundException(e, headers, status, request);
         } else {
             HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
             return handleExceptionInternal(ex, null, headers, status, request);
@@ -40,6 +45,21 @@ public class GlobalExceptionHandler {
 
     /**
      * Customize the response for NoSuchElementException.
+     *
+     * @param ex      The exception
+     * @param headers The headers to be written to the response
+     * @param status  The selected response status
+     * @return a {@code ResponseEntity} instance
+     */
+    protected ResponseEntity<ApiException> handleNoSuchElementFoundException(NoSuchElementException ex,
+                                                                             HttpHeaders headers, HttpStatus status,
+                                                                             WebRequest request) {
+        List<String> errors = Collections.singletonList(ex.getMessage());
+        return handleExceptionInternal(ex, new ApiException(errors), headers, status, request);
+    }
+
+    /**
+     * Customize the response for CourseNotFoundException.
      *
      * @param ex      The exception
      * @param headers The headers to be written to the response

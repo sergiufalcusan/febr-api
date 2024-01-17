@@ -1,7 +1,6 @@
 package io.febr.api.controller.teacher;
 
 import io.febr.api.dto.StudentDTO;
-import io.febr.api.dto.TeacherDTO;
 import io.febr.api.service.AuthorizationService;
 import io.febr.api.service.UserService;
 import lombok.AllArgsConstructor;
@@ -18,6 +17,12 @@ public class TeacherUserController {
     UserService userService;
     AuthorizationService authorizationService;
 
+    /**
+     * Create a new teacher
+     *
+     * @param registerDTO teacher registration request
+     * @return newly created teacher information
+     */
     @PostMapping("/student/new")
     public ResponseEntity<?> createStudent(@RequestBody StudentDTO.RegisterRequest registerDTO) {
         return ResponseEntity.ok(userService.createStudent(registerDTO));

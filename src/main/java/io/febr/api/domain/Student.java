@@ -9,6 +9,11 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.Set;
 
+/**
+ * A student is a user who is enrolled in a course.
+ * A student has a name, an email, and a list of courses.
+ * A student can be enrolled in many courses.
+ */
 @SuperBuilder
 @Entity
 @AllArgsConstructor

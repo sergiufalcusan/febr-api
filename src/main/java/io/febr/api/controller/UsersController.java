@@ -8,13 +8,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/student")
+@RequestMapping("/api/v1/users")
 @AllArgsConstructor
-public class StudentController {
+public class UsersController {
     public UserService userService;
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllCourses() {
+    /**
+     * Get all teachers
+     *
+     * @return list of teachers
+     */
+    @GetMapping("/teachers")
+    public ResponseEntity<?> getAllTeachers() {
+        return ResponseEntity.ok(userService.getAllTeachers());
+    }
+
+    /**
+     * Get all students
+     *
+     * @return list of students
+     */
+    @GetMapping("/students")
+    public ResponseEntity<?> getAllStudents() {
         return ResponseEntity.ok(userService.getAllStudents());
     }
 }
